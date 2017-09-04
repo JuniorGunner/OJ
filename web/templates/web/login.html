@@ -1,0 +1,46 @@
+{% extends "web/base.html" %}
+
+{% block title %} Login {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <!-- Animate.css -->
+  <link href="/static/vendors/animate.css/animate.min.css" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block body_class %}login{% endblock body_class %}
+
+{% block body %}
+  <div>
+    <div class="login_wrapper">
+      <div class="animate form login_form">
+        <section class="login_content">
+          {% if form.errors %}
+          {{ form.non_field_errors }}
+          {% endif %}
+          <form action="." method="post">
+            {% csrf_token %}
+            <h1><i class="fa fa-code"></i> PAEP</h1>
+            <div>
+              <input type="text" class="form-control" placeholder="Usuário" required="" name="username"/>
+            </div>
+            <div>
+              <input type="password" class="form-control" placeholder="Senha" required="" name="password"/>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-default submit">Entrar</button>
+              <a class="reset_pass" href="#">Perdeu a senha?</a>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="separator">
+              <div class="clearfix"></div>
+                <a href="https://github.com/alan-ra/OJ" target="_blank"><h1><i class="fa fa-github"></i></h1></a>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock body %}

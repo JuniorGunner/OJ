@@ -1,0 +1,56 @@
+<div class="left_col scroll-view">
+  <div class="navbar nav_title" style="border: 0;">
+    <a href="/" class="site_title"><i class="fa fa-code"></i><span> PAEP</span></a>
+  </div>
+
+  <div class="clearfix"></div>
+
+  <!-- menu profile quick info -->
+  <div class="profile clearfix">
+    <!-- <div class="profile_pic">
+      <img src="/static/images/img.jpg" alt="..." class="img-circle profile_img">
+    </div> -->
+    <div class="profile_info">
+      <span>Bem-Vindo,</span>
+      <h2>{{user.username}}</h2>
+    </div>
+  </div>
+  <!-- /menu profile quick info -->
+
+  <br />
+
+  <!-- sidebar menu -->
+  <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+    <div class="menu_section">
+      <h3>Professor</h3>
+      <ul class="nav side-menu">
+        <li><a href="/"><i class="fa fa-home"></i> Dashboard</a></li>
+        <li><a><i class="fa fa-group"></i> Grupos <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="/grupos_professor/">Meus Grupos</a></li>
+            <li><a href="/criar_grupo/">Criar Grupo</a></li>
+          </ul>
+        </li>
+        <li><a><i class="fa fa-list"></i> Listas <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="/listas_professor/">Minhas Listas</a></li>
+            <li><a href="/criar_lista/">Criar Lista</a></li>
+          </ul>
+        </li>
+        <li><a><i class="fa fa-pencil"></i> Exercícios <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="/exercicios_professor/">Meus Exercícios</a></li>
+            <li><a href="/criar_exercicio/">Criar Exercício</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- /sidebar menu -->
+
+  <!-- <div class="sidebar-footer hidden-small">
+    <a data-toggle="tooltip" data-placement="top" title="Logout" href="/logout/">
+      <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+    </a>
+  </div> -->
+</div>

@@ -1,0 +1,10 @@
+{% if user.is_authenticated %}
+    <html>
+        <head>
+            <meta http-equiv="refresh" content="0; url=/" />
+        </head>
+        <body></body>
+    </html>
+{% else %}
+    {% include "web/login.html" %}
+{% endif %}
