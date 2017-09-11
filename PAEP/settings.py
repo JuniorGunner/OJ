@@ -15,6 +15,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+OJ_DATA_DIR = os.path.join(BASE_DIR, 'OJ_data')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -25,7 +26,7 @@ SECRET_KEY = '=jpbhr6!vj^0@w31e)yi_zk72nc!q$4u@p6b$zq+$1ck^ju2jf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition

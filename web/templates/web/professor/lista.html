@@ -1,6 +1,6 @@
 {% extends 'web/professor/base.html' %}
 
-{% block title %} Plain Page {% endblock title %}
+{% block title %} Lista {{ lista.titulo }} {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -9,18 +9,86 @@
 {% block content %}
     <div class="right_col" role="main">
       <div class="">
+
+
         <div class="page-title">
           <div class="title_left">
-            <h3>Plain Page</h3>
+            <h3>Lista: {{ lista.titulo }}</h3>
           </div>
+        </div>
 
-          <div class="title_right">
-            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">Go!</button>
-                </span>
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>Dados</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                <b>Grupo: </b> <a href="/grupo_professor/{{ lista.grupo.id }}">{{ lista.grupo.nome }}</a> <br>
+                <b>Data/Hora Criação: </b> {{ lista.hora_criacao }}<br>
+                <b>Prazo: </b> {{ lista.prazo }}<br>
+
+                <br>
+
+                <div class="checkbox">
+                    <label>
+                      <input name="submeter" type="checkbox" class="flat" {% if lista.ver %} checked="checked" {% endif %} disabled="disabled"> Ver
+                    </label>
+                    {% if not lista.ver %}
+                      <button type="button" class="btn btn-link" data-toggle="modal" data-target=".ver-modal">Habilitar</button>
+                      <div class="modal fade ver-modal " tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                              </button>
+                              <h4 class="modal-title" id="myModalLabel">Confirmação</h4>
+                            </div>
+                            <div class="modal-body">
+                              <h4>Deseja realmente habilitar visualização para alunos para lista {{ lista.titulo }}?</h4>
+                            </div>
+                            <div class="modal-footer">
+                              <a href="/" class="btn btn-primary">Confirmar</a>
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                </div>
+
+                <div class="checkbox">
+                    <label>
+                      <input name="submeter" type="checkbox" class="flat" {% if lista.submeter %} checked="checked" {% endif %} disabled="disabled"> Submeter
+                    </label>
+                    {% if not lista.submeter %}
+                      <button type="button" class="btn btn-link" data-toggle="modal" data-target=".submeter-modal">Habilitar</button>
+                      <div class="modal fade submeter-modal " tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                              </button>
+                              <h4 class="modal-title" id="myModalLabel">Confirmação</h4>
+                            </div>
+                            <div class="modal-body">
+                              <h4>Deseja realmente habilitar submissões para lista {{ lista.titulo }}?</h4>
+                            </div>
+                            <div class="modal-footer">
+                              <a href="/" class="btn btn-primary">Confirmar</a>
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                </div>
+
+
               </div>
             </div>
           </div>
@@ -32,30 +100,115 @@
           <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
               <div class="x_title">
-                <h2>Plain Page</h2>
+                <h2>Submissões</h2>
                 <ul class="nav navbar-right panel_toolbox">
-                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                  </li>
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                    <ul class="dropdown-menu" role="menu">
-                      <li><a href="#">Settings 1</a>
-                      </li>
-                      <li><a href="#">Settings 2</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li><a class="close-link"><i class="fa fa-close"></i></a>
-                  </li>
+                  <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                 </ul>
                 <div class="clearfix"></div>
               </div>
               <div class="x_content">
-                  Add content to the page ...
+                {% if lista.exercicios.all|length == 0 %}
+                  <p>Este lista não tem nenhum exercício.</p>
+                {% else %}
+                  {% for registro in alunos %}
+                    <div class="ln_solid"></div>
+                    <b>Aluno: </b>
+                    <a href="/perfil_aluno/{{ registro.aluno.id }}" target="_blank">{{ registro.aluno.user.get_full_name }}</a>
+
+                    {% if registro.submissoes|length == 0 %}
+                      <p>Não há submissões desse aluno.</p>
+                    {% else %}
+                      <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th>Exercício</th>
+                            <th>Submissão Aceita</th>
+                            <th>Tentativas</th>
+                            <th>Submissões</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for submissao in registro.submissoes %}
+                            <tr>
+                              <th scope="row"><a href="/exercicio_professor/{{ submissao.exercicio.id }}" target="_blank"> {{ submissao.exercicio.titulo }}</a></th>
+                              <td scope="row"><a href="/">{{ submissao.hora_submissao }}</a></td>
+                              <td scope="row"><a href="/">{{ submissao.status }}</a></td>
+                              <td scope="row"><a href="/">ver todas</a></td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
               </div>
             </div>
           </div>
         </div>
+
+
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>Estatísticas</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                <br>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ln_solid"></div>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target=".bs-example-modal-lg">Excluir</button>
+        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Confirmação</h4>
+              </div>
+              <div class="modal-body">
+                <h4>Tem certeza que deseja excluir a lista {{ lista.titulo }}?</h4>
+              </div>
+              <div class="modal-footer">
+                <a href="/excluir_lista/{{ lista.id }}" class="btn btn-danger">Confirmar</a>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".moss-modal">Submeter ao MOSS</button>
+        <div class="modal fade moss-modal" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Confirmação</h4>
+              </div>
+              <div class="modal-body">
+                <h4>Deseja realmente solicitar avaliação de similaridade entre as submissões da lista {{ lista.titulo }}?</h4>
+                <h4>Você receberá um e-mail com os resultados.</h4>
+              </div>
+              <div class="modal-footer">
+                <a href="/excluir_lista/{{ lista.id }}" class="btn btn-primary">Confirmar</a>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </div>
 {% endblock content %}

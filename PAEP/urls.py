@@ -9,3 +9,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'', include('web.urls')),
 ]
+
+handler404 = "web.views.main.error404"
