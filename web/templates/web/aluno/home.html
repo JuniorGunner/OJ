@@ -1,63 +1,143 @@
 {% extends 'web/aluno/base.html' %}
 
-{% block title %} Plain Page {% endblock title %}
+{% block title %} Home {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
 {% endblock stylesheets %}
 
 {% block content %}
-    <div class="right_col" role="main">
-      <div class="">
-        <div class="page-title">
-          <div class="title_left">
-            <h3>Plain Page</h3>
+<div class="right_col" role="main">
+  <div class="">
+    <div class="clearfix"></div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Listas <small><a href="/listas_aluno">ver todas</a></small></h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
           </div>
-
-          <div class="title_right">
-            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">Go!</button>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="row">
-          <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel">
-              <div class="x_title">
-                <h2>Plain Page</h2>
-                <ul class="nav navbar-right panel_toolbox">
-                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                  </li>
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                    <ul class="dropdown-menu" role="menu">
-                      <li><a href="#">Settings 1</a>
-                      </li>
-                      <li><a href="#">Settings 2</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li><a class="close-link"><i class="fa fa-close"></i></a>
-                  </li>
-                </ul>
-                <div class="clearfix"></div>
-              </div>
-              <div class="x_content">
-                  Add content to the page ...
-              </div>
-            </div>
+          <div class="x_content">
+            <br>
+            {% if listas|length == 0 %}
+              <p>Você ainda não tem nenhuma lista.</p>
+            {% else %}
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Título</th>
+                    <th>Grupo</th>
+                    <th>Prazo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for lista in listas %}
+                  <tr>
+                    <td scope="row"><a href="/lista_aluno/{{ lista.id }}">{{ lista.id }}</a></td>
+                    <td scope="row"><a href="/lista_aluno/{{ lista.id }}">{{ lista.titulo }}</a></td>
+                    <td scope="row"><a href="/grupo_aluno/{{ lista.grupo.id }}">{{ lista.grupo.nome }}</a></td>
+                    <td scope="row">{{ lista.prazo }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
           </div>
         </div>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Grupos <small><a href="/grupos_aluno">ver todos</a></small></h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <br>
+            {% if grupos|length == 0 %}
+              <p>Você não está em nenhum grupo.</p>
+            {% else %}
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th>Professor</th>
+                    <th>Quantidade de Alunos</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for grupo in grupos %}
+                  <tr>
+                    <td scope="row"><a href="/grupo_aluno/{{ grupo.id }}">{{ grupo.id }}</a></td>
+                    <td scope="row"><a href="/grupo_aluno/{{ grupo.id }}">{{ grupo.nome }}</a></td>
+                    <td>{{ grupo.professor.user.get_full_name }}</td>
+                    <td>{{ grupo.qtd_alunos }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Submissões <small><a href="/submissoes_aluno/">ver todas</a></small></h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <br>
+            {% if submissoes|length == 0 %}
+              <p>Você ainda não fez nenhuma submissão.</p>
+            {% else %}
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Exercício</th>
+                    <th>Lista</th>
+                    <th>Data/Hora</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for submissao in submissoes %}
+                  <tr>
+                    <td><a href="/submissao_aluno/{{ submissao.id }}">{{ submissao.id }}</a></td>
+                    <td><a href="/exercicio_lista_aluno/{{ submissao.lista.id }}/{{ submissao.exercicio.id }}">{{ submissao.exercicio.id }} - {{ submissao.exercicio.titulo }}</a></td>
+                    <td><a href="/lista_aluno/{{ submissao.lista.id }}">{{ submissao.lista.titulo }}</a></td>
+                    <td>{{ submissao.hora_submissao }}</td>
+                    <td class="{% if submissao.status == 1 %} text-success {% elif submissao.status == 0 %} text-primary {% else %} text-danger {% endif %}" ><b>{{ submissao.status_str }}</b></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock content %}
 
 {% block javascripts %}

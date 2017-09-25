@@ -1,0 +1,55 @@
+{% extends 'web/aluno/base.html' %}
+
+{% block title %} Confirmação de Submissao {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="">
+
+
+    <div class="page-title">
+      <div class="title_left">
+        <h3>Submissao</h3>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Submissão</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            {% if mensagem %}
+            <div class="col-md-5 col-sm-5 col-xs-2">
+              <!-- <div class="alert {% if erro %} alert-danger {% else %} alert-success {% endif %} alert-dismissible fade in" role="alert"> -->
+              <div class="alert {{ mensagem.tags }} alert-dismissible fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <strong>Status: {{ mensagem }}</strong>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+{% endblock javascripts %}

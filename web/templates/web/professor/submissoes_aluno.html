@@ -1,6 +1,6 @@
-{% extends 'web/aluno/base.html' %}
+{% extends 'web/professor/base.html' %}
 
-{% block title %} Grupos {% endblock title %}
+{% block title %} Submissões do Aluno {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -18,7 +18,7 @@
 
     <div class="page-title">
       <div class="title_left">
-        <h3>Grupos</h3>
+        <h3>Submissões</h3>
       </div>
     </div>
 
@@ -27,35 +27,36 @@
     <div class="row">
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
-
-          <div class="x_title">
-            <h2>Grupo</h2>
-            <ul class="nav navbar-right panel_toolbox">
-              <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-            </ul>
-            <div class="clearfix"></div>
-          </div>
-          <div class="x_content">
-            <br>
-            {% if grupos|length == 0 %}
-              <p>Você não está incluído em nenhum grupo.</p>
+            {% if submissoes|length == 0 %}
+              <p>Este aluno não tem nenhuma submisssão para exercícios desta lista.</p>
             {% else %}
-              <table id="datatable" class="table table-hover">
+            <div class="x_title">
+              <h2>Submissões</h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <b>Lista: </b> <a href="/lista_professor/{{ submissoes.0.lista.id }}">{{ submissoes.0.lista.titulo }}</a><br>
+              <b>Exercício: </b> <a href="/exercicio_professor/{{ submissoes.0.exercicio.id }}">{{ submissoes.0.exercicio.id }} - {{ submissoes.0.exercicio.titulo }}</a> <br>
+              <b>Aluno: </b> <a href="/">{{ submissoes.0.aluno.id }} - {{ submissoes.0.aluno.user.get_full_name }}</a><br>
+              <br>
+              <div class="ln_solid"></div>
+              <table id="datatable-sub" class="table table-hover">
                 <thead>
                   <tr>
                     <th>Código</th>
-                    <th>Nome</th>
-                    <th>Professor</th>
-                    <th>Quantidade de Alunos</th>
+                    <th>Data/Hora</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for grupo in grupos %}
+                  {% for submissao in submissoes %}
                   <tr>
-                    <td scope="row"><a href="/grupo_aluno/{{ grupo.id }}">{{ grupo.id }}</a></td>
-                    <td scope="row"><a href="/grupo_aluno/{{ grupo.id }}">{{ grupo.nome }}</a></td>
-                    <td scope="row">{{ grupo.professor.user.get_full_name }}</td>
-                    <td>{{ grupo.qtd_alunos }}</td>
+                    <td><a href="/submissao_exercicio_aluno/{{ submissao.id }}">{{ submissao.id }}</a></td>
+                    <td>{{ submissao.hora_submissao }}</td>
+                    <td class="{% if submissao.status == 1 %} text-success {% elif submissao.status == 0 %} text-primary {% else %} text-danger {% endif %}" ><b>{{ submissao.status_str }}</b></td>
                   </tr>
                   {% endfor %}
                 </tbody>

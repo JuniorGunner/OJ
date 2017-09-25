@@ -15,43 +15,39 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Aluno',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, verbose_name='Usuário')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('ra', models.CharField(max_length=10, verbose_name='RA', unique=True)),
+                ('user', models.OneToOneField(verbose_name='Usuário', to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='Exercicio',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('titulo', models.CharField(max_length=60, verbose_name='Título')),
-                ('codigo', models.CharField(max_length=10, verbose_name='Código', unique=True)),
                 ('descricao', models.TextField(max_length=800, verbose_name='Descrição')),
-                ('lim_codigo_fonte', models.IntegerField(verbose_name='Limite de Código fonte', blank=True, null=True)),
                 ('lim_tempo_s', models.IntegerField(verbose_name='Limite de Tempo (s)')),
-                ('lim_memoria_k', models.IntegerField(verbose_name='Limite de Memória (KB)')),
-                ('lim_saida_k', models.IntegerField(verbose_name='Limite de Saída (KB)', blank=True, null=True)),
-                ('inativo', models.BooleanField(verbose_name='Inativo', default=False)),
+                ('inativo', models.BooleanField(default=False, verbose_name='Inativo')),
             ],
         ),
         migrations.CreateModel(
             name='Grupo',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nome', models.CharField(max_length=60, verbose_name='Nome')),
-                ('inativo', models.BooleanField(verbose_name='Inativo', default=False)),
+                ('inativo', models.BooleanField(default=False, verbose_name='Inativo')),
                 ('alunos', models.ManyToManyField(verbose_name='Alunos', to='web.Aluno')),
             ],
         ),
         migrations.CreateModel(
             name='Lista',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('titulo', models.CharField(max_length=60, verbose_name='Título')),
-                ('ver', models.BooleanField(verbose_name='Ver', default=True)),
-                ('submeter', models.BooleanField(verbose_name='Submeter', default=True)),
-                ('hora_criacao', models.DateTimeField(auto_now_add=True, verbose_name='Data/Hora Criação')),
-                ('prazo', models.DateTimeField(verbose_name='Prazo', blank=True, null=True)),
-                ('inativo', models.BooleanField(verbose_name='Inativo', default=False)),
+                ('submeter', models.BooleanField(default=True, verbose_name='Submeter')),
+                ('hora_criacao', models.DateTimeField(verbose_name='Data/Hora Criação', auto_now_add=True)),
+                ('prazo', models.DateTimeField(verbose_name='Prazo', null=True, blank=True)),
+                ('inativo', models.BooleanField(default=False, verbose_name='Inativo')),
                 ('exercicios', models.ManyToManyField(verbose_name='Exercícios', to='web.Exercicio')),
                 ('grupo', models.ForeignKey(verbose_name='Grupo', to='web.Grupo')),
             ],
@@ -59,7 +55,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Material',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('titulo', models.CharField(max_length=60, verbose_name='Título')),
                 ('grupo', models.ForeignKey(verbose_name='Grupo', to='web.Grupo')),
             ],
@@ -67,16 +63,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Professor',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, verbose_name='Usuário')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('user', models.OneToOneField(verbose_name='Usuário', to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='Submissao',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('status', models.IntegerField(verbose_name='Status da Submissão', blank=True, null=True)),
-                ('hora_submissao', models.DateTimeField(auto_now_add=True, verbose_name='Data/Hora da Submissão')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('status', models.IntegerField(verbose_name='Status da Submissão', null=True, blank=True)),
+                ('hora_submissao', models.DateTimeField(verbose_name='Data/Hora da Submissão', auto_now_add=True)),
                 ('aluno', models.ForeignKey(verbose_name='Aluno', to='web.Aluno')),
                 ('exercicio', models.ForeignKey(verbose_name='Exercício', to='web.Exercicio')),
                 ('lista', models.ForeignKey(verbose_name='Lista', to='web.Lista')),

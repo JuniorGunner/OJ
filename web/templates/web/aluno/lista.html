@@ -1,63 +1,154 @@
 {% extends 'web/aluno/base.html' %}
 
-{% block title %} Plain Page {% endblock title %}
+{% block title %} Lista {{ lista.titulo }} {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
 {% endblock stylesheets %}
 
 {% block content %}
-    <div class="right_col" role="main">
-      <div class="">
-        <div class="page-title">
-          <div class="title_left">
-            <h3>Plain Page</h3>
+<div class="right_col" role="main">
+  <div class="">
+
+
+    <div class="page-title">
+      <div class="title_left">
+        <h3>Lista</h3>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Dados</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
           </div>
-
-          <div class="title_right">
-            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">Go!</button>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="row">
-          <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel">
-              <div class="x_title">
-                <h2>Plain Page</h2>
-                <ul class="nav navbar-right panel_toolbox">
-                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                  </li>
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                    <ul class="dropdown-menu" role="menu">
-                      <li><a href="#">Settings 1</a>
-                      </li>
-                      <li><a href="#">Settings 2</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li><a class="close-link"><i class="fa fa-close"></i></a>
-                  </li>
-                </ul>
-                <div class="clearfix"></div>
-              </div>
-              <div class="x_content">
-                  Add content to the page ...
-              </div>
-            </div>
+          <div class="x_content">
+            <b>Título: </b> {{ lista.titulo }}<br>
+            <b>Grupo: </b> <a href="/grupo_aluno/{{ lista.grupo.id }}">{{ lista.grupo.nome }}</a> <br>
+            <b>Data/Hora Criação: </b> {{ lista.hora_criacao }}<br>
+            <b>Prazo: </b> {{ lista.prazo }}<br>
           </div>
         </div>
       </div>
     </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Exercícios</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <br>
+            {% if lista.exercicios.all|length == 0 %}
+              <p>Esta lista não possui nenhum exercício.</p>
+            {% else %}
+              <table id="datatable" class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Título</th>
+                    <th>Status</th>
+                    <!-- <th>Resolução</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for exercicio_sub in exercicios_sub %}
+                  <tr>
+                    <td scope="row">
+                      <a href="/exercicio_lista_aluno/{{ lista.id }}/{{ exercicio_sub.exercicio.id }}">{{ exercicio_sub.exercicio.id }}</a>
+                    </td>
+                    <td scope="row">
+                      <a href="/exercicio_lista_aluno/{{ lista.id }}/{{ exercicio_sub.exercicio.id }}">{{ exercicio_sub.exercicio.titulo }}</a>
+                    </td>
+                    <td scope="row">
+                      {% if exercicio_sub.status %}
+                      <span class="text-success"><b>Resolvido</b></span>
+                      {% elif exercicio_sub.tentativas %}
+                      <span class="text-warning"><b>{{ exercicio_sub.tentativas }} tentativa(s)</b></span>
+                      {% else %}
+                      <span class="text-primary"><b>Nenhuma tentativa</b></span>
+                      {% endif %}
+                    </td>
+                    <!-- <td scope="row">{% if exercicio_sub.status %} <a target="_blank" href="/submissao_aluno/{{ exercicio_sub.submissao }}">#{{exercicio_sub.submissao}}</a> {% endif %}</td> -->
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Submissões do Grupo</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            {% if lista.exercicios.all|length == 0 %}
+              <p>Este lista não tem nenhum exercício.</p>
+            {% else %}
+              {% for registro in alunos %}
+                <div class="ln_solid"></div>
+                <b>Aluno: </b>{{ registro.aluno.user.get_full_name }}<br>
+                <b>Exercícios Resolvidos: </b>{{ registro.qtd_resolvida }}<br>
+                {% if registro.exercicios_aluno|length == 0 %}
+                  <p>Não há submissões desse aluno.</p>
+                {% else %}
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Exercício</th>
+                        <th>Tentativas</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for exercicio_aluno in registro.exercicios_aluno %}
+                        <tr>
+                          <td scope="row">{{ exercicio_aluno.exercicio.id }} - {{ exercicio_aluno.exercicio.titulo }}</td>
+                          <td scope="row">{{ exercicio_aluno.tentativas }}</td>
+                          <td scope="row">
+                            {% if exercicio_aluno.status %}
+                            <span class="text-success"><b>Resolvido</b></span>
+                            {% else %}
+                            <span class="text-warning"><b>Não Resolvido</b></span>
+                            {% endif %}
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock content %}
 
 {% block javascripts %}

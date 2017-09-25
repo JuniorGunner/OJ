@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
   {{ block.super }}
+  <link rel="stylesheet" href="/static/build/css/codemirror.css" media="screen" title="no title" charset="utf-8">
 {% endblock stylesheets %}
 
 {% block content %}
@@ -35,7 +36,6 @@
                 <br>
                 <b>Título: </b> {{ exercicio.titulo }} <br>
                 <b>Tempo Limite (s): </b> {{ exercicio.lim_tempo_s }} <br>
-                <b>Limite de Memória (KB): </b> {{ exercicio.lim_memoria_k }} <br>
                 <br><b>Descrição: </b> <br> {{ exercicio.descricao }} <br>
                 <br><b>Exemplos:</b><br><br>
                 <div class="well well-sm">
@@ -46,6 +46,9 @@
                   <b>Saída</b><br><br>
                   {% for linha in exemplos.saida %} {{ linha }} <br> {% endfor %}
                 </div>
+                <div class="ln_solid"></div>
+                <b>Solução</b><br><br>
+                <textarea id="editor-codigo-sub" name="editor_codigo">{{ codigo }}</textarea>
                 <br>
                 <div class="ln_solid"></div>
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target=".bs-example-modal-lg">Excluir</button>
@@ -80,4 +83,6 @@
 
 {% block javascripts %}
   {{ block.super }}
+  <script type="text/javascript" src="/static/build/js/codemirror.js"></script>
+  <script type="text/javascript" src="/static/build/js/python.js"></script>
 {% endblock javascripts %}

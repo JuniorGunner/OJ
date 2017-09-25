@@ -11,12 +11,27 @@ from web.models import *
 @login_required
 def home(request):
     if hasattr(request.user, 'aluno'):
-        return render(request, 'web/aluno/home.html', {})
+        listas = Lista.objects.filter(grupo__alunos = request.user.aluno,
+        inativo = False, submeter = True).order_by('prazo')[:5]
+
+        grupos = Grupo.objects.filter(inativo = False).annotate(qtd_alunos = Count('alunos'))\
+        .filter(alunos = request.user.aluno).order_by('-id')[:5]
+
+        submissoes = Submissao.objects.filter(aluno = request.user.aluno,
+        lista__inativo = False).order_by('-hora_submissao')[:5]
+
+        return render(request, 'web/aluno/home.html', {
+            'listas': listas,
+            'grupos': grupos,
+            'submissoes': submissoes
+        })
     elif hasattr(request.user, 'professor'):
-        listas = Lista.objects.filter(grupo__professor = request.user.professor, inativo = False)[:5]
+        listas = Lista.objects.filter(grupo__professor = request.user.professor, inativo = False)\
+        .order_by('-prazo')[:5]
         grupos = Grupo.objects.filter(professor = request.user.professor, inativo = False)\
-        .annotate(qtd_alunos = Count('alunos'))[:5]
-        exercicios = Exercicio.objects.filter(professor = request.user.professor, inativo = False)[:5]
+        .annotate(qtd_alunos = Count('alunos')).order_by('-id')[:5]
+        exercicios = Exercicio.objects.filter(professor = request.user.professor, inativo = False)\
+        .order_by('-id')[:5]
 
         return render(request, 'web/professor/home.html', {
             'listas': listas,

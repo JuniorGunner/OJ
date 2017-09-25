@@ -32,9 +32,7 @@
                 <b>Data/Hora Criação: </b> {{ lista.hora_criacao }}<br>
                 <b>Prazo: </b> {{ lista.prazo }}<br>
 
-                <br>
-
-                <div class="checkbox">
+                <!-- <div class="checkbox">
                     <label>
                       <input name="submeter" type="checkbox" class="flat" {% if lista.ver %} checked="checked" {% endif %} disabled="disabled"> Ver
                     </label>
@@ -59,35 +57,56 @@
                         </div>
                       </div>
                     {% endif %}
-                </div>
+                </div> -->
 
-                <div class="checkbox">
-                    <label>
-                      <input name="submeter" type="checkbox" class="flat" {% if lista.submeter %} checked="checked" {% endif %} disabled="disabled"> Submeter
-                    </label>
-                    {% if not lista.submeter %}
-                      <button type="button" class="btn btn-link" data-toggle="modal" data-target=".submeter-modal">Habilitar</button>
-                      <div class="modal fade submeter-modal " tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                              </button>
-                              <h4 class="modal-title" id="myModalLabel">Confirmação</h4>
-                            </div>
-                            <div class="modal-body">
-                              <h4>Deseja realmente habilitar submissões para lista {{ lista.titulo }}?</h4>
-                            </div>
-                            <div class="modal-footer">
-                              <a href="/" class="btn btn-primary">Confirmar</a>
-                              <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-                            </div>
-                          </div>
+                <b>Submeter: </b><span id="span-submeter">{% if lista.submeter %} Sim {% else %} Não {% endif %}</span>
+                {% if not lista.submeter %}
+                  <br><button id="btn-ativa-habilitar" type="button" class="btn btn-link" data-toggle="modal" data-target=".submeter-modal">Habilitar Submissão</button>
+                  <div class="modal fade submeter-modal " tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                          </button>
+                          <h4 class="modal-title" id="myModalLabel">Confirmação</h4>
+                        </div>
+                        <div class="modal-body">
+                          <h4>Deseja realmente habilitar submissões para lista {{ lista.titulo }}?</h4>
+                        </div>
+                        <div class="modal-footer">
+                          <button id="btn-habilitar" url-ativa-submeter="/habilita_submissao/{{ lista.id }}" class="btn btn-primary" data-dismiss="modal">Confirmar</button>
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
                         </div>
                       </div>
-                    {% endif %}
-                </div>
-
+                    </div>
+                  </div>
+                {% endif %}
+                <br>
+                <div class="ln_solid"></div>
+                {% if lista.exercicios.all|length == 0 %}
+                  <p>Esta lista não possui nenhum exercício.</p>
+                {% else %}
+                  <table id="datatable" class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Código</th>
+                        <th>Título</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for exercicio in lista.exercicios.all %}
+                      <tr>
+                        <td scope="row">
+                          <a href="/exercicio_professor/{{ exercicio.id }}">{{ exercicio.id }}</a>
+                        </td>
+                        <td scope="row">
+                          <a href="/exercicio_professor/{{ exercicio.id }}">{{ exercicio.titulo }}</a>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                {% endif %}
 
               </div>
             </div>
@@ -112,28 +131,46 @@
                 {% else %}
                   {% for registro in alunos %}
                     <div class="ln_solid"></div>
-                    <b>Aluno: </b>
-                    <a href="/perfil_aluno/{{ registro.aluno.id }}" target="_blank">{{ registro.aluno.user.get_full_name }}</a>
+                    <b>RA: </b>{{ registro.aluno.ra }}<br>
+                    <b>Aluno: </b>{{ registro.aluno.user.get_full_name }}<br>
+                    <!-- <a href="/perfil_aluno/{{ registro.aluno.id }}" target="_blank">{{ registro.aluno.user.get_full_name }}</a><br> -->
+                    <b>Exercícios Resolvidos: </b>{{ registro.qtd_resolvida }}<br>
 
-                    {% if registro.submissoes|length == 0 %}
+                    {% if registro.exercicios_aluno|length == 0 %}
                       <p>Não há submissões desse aluno.</p>
                     {% else %}
                       <table class="table table-hover">
                         <thead>
                           <tr>
                             <th>Exercício</th>
-                            <th>Submissão Aceita</th>
                             <th>Tentativas</th>
+                            <th>Status</th>
+                            <th>Submissão Aceita</th>
                             <th>Submissões</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {% for submissao in registro.submissoes %}
+                          {% for exercicio_aluno in registro.exercicios_aluno %}
                             <tr>
-                              <th scope="row"><a href="/exercicio_professor/{{ submissao.exercicio.id }}" target="_blank"> {{ submissao.exercicio.titulo }}</a></th>
-                              <td scope="row"><a href="/">{{ submissao.hora_submissao }}</a></td>
-                              <td scope="row"><a href="/">{{ submissao.status }}</a></td>
-                              <td scope="row"><a href="/">ver todas</a></td>
+                              <td scope="row">{{ exercicio_aluno.exercicio.id }} - {{ exercicio_aluno.exercicio.titulo }}</td>
+                              <td scope="row">{{ exercicio_aluno.tentativas }}</td>
+                              <td scope="row">
+                                {% if exercicio_aluno.status %}
+                                <span class="text-success"><b>Resolvido</b></span>
+                                {% else %}
+                                <span class="text-warning"><b>Não Resolvido</b></span>
+                                {% endif %}
+                              </td>
+                              <td scope="row">
+                                {% if exercicio_aluno.status %}
+                                <a href="/submissao_exercicio_aluno/{{ exercicio_aluno.submissao_aceita }}">#{{ exercicio_aluno.submissao_aceita }}</a>
+                                {% endif %}
+                              </td>
+                              <td scope="row">
+                                {% if exercicio_aluno.tentativas %}
+                                <a href="/submissoes_lista_aluno/{{ lista.id }}/{{ exercicio_aluno.exercicio.id }}/{{ registro.aluno.id }}">ver todas</a>
+                                {% endif %}
+                              </td>
                             </tr>
                           {% endfor %}
                         </tbody>
@@ -158,8 +195,11 @@
                 <div class="clearfix"></div>
               </div>
               <div class="x_content">
+                <b>Total de exercícios: </b> {{ lista.exercicios.all|length }} <br>
+                <b>Total de tentativas: </b> {{ desempenho.total_tentativas }} <br>
                 <br>
-
+                <b>Média de exercícios resolvidos: </b> {{ desempenho.resolvidos|floatformat:2 }} <br>
+                <b>Média de tentativas: </b> {{ desempenho.tentativas|floatformat:2 }} <br>
               </div>
             </div>
           </div>

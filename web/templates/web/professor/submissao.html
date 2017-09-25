@@ -1,6 +1,6 @@
-{% extends 'web/aluno/base.html' %}
+{% extends 'web/professor/base.html' %}
 
-{% block title %} Resposta {% endblock title %}
+{% block title %} Submissão {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -14,7 +14,7 @@
 
     <div class="page-title">
       <div class="title_left">
-        <h3>Resposta</h3>
+        <h3>Submissão</h3>
       </div>
     </div>
 
@@ -24,7 +24,7 @@
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2>Resposta</h2>
+            <h2>Submissão {{ submissao.id }}</h2>
             <ul class="nav navbar-right panel_toolbox">
               <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
             </ul>
@@ -33,22 +33,16 @@
           <div class="x_content">
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                  <b>Exercício: </b> <a href="/exercicio_lista_aluno/{{ lista.id }}/{{ exercicio.id }}">{{ exercicio.id }} - {{ exercicio.titulo }}</a> <br>
-                  <b>Lista: </b> <a href="/lista_aluno/{{ lista.id }}">{{ lista.titulo }}</a> <br>
-                  <b>Grupo: </b> <a href="/grupo_aluno/{{ lista.grupo.id }}">{{ lista.grupo.nome }}</a> <br>
-                  <b>Professor: </b> {{ lista.grupo.professor.user.get_full_name }}<br>
+                  <b>Aluno: </b> {{ submissao.aluno.user.get_full_name }}<br>
+                  <b>Status: </b> <b class="{% if submissao.status == 1 %} text-success {% elif submissao.status == 0 %} text-primary {% else %} text-danger {% endif %}">{{ submissao.status_str }}</b><br>
+                  <b>Data/Hora: </b> {{ submissao.hora_submissao }}<br>
+                  <b>Exercício: </b> <a href="/exercicio_professor/{{ submissao.exercicio.id }}">{{ submissao.exercicio.titulo }}</a> <br>
+                  <b>Lista: </b> <a href="/lista_professor/{{ submissao.lista.id }}">{{ submissao.lista.titulo }}</a> <br>
+                  <b>Grupo: </b> <a href="/grupo_professor/{{ submissao.lista.grupo.id }}">{{ submissao.lista.grupo.nome }}</a> <br>
                 </div>
               </div>
             <div class="ln_solid"></div>
-            <input type="hidden" name="tipo_submissao" value="editor" form="submissao">
             <textarea id="editor-codigo-sub" name="editor_codigo" form="submissao">{{ codigo }}</textarea>
-            <div class="ln_solid"></div>
-            <form action="/tutor/" target="_blank"  method="post" id="submissao">
-              {% csrf_token %}
-              <div class="form-group">
-                  <button class="btn btn-primary" name="depurar">Depurar</button>
-              </div>
-            </form>
           </div>
         </div>
       </div>

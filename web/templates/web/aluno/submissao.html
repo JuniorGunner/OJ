@@ -1,65 +1,68 @@
 {% extends 'web/aluno/base.html' %}
 
-{% block title %} Plain Page {% endblock title %}
+{% block title %} Submissão {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
+  <link rel="stylesheet" href="/static/build/css/codemirror.css" media="screen" title="no title" charset="utf-8">
 {% endblock stylesheets %}
 
 {% block content %}
-    <div class="right_col" role="main">
-      <div class="">
-        <div class="page-title">
-          <div class="title_left">
-            <h3>Plain Page</h3>
+<div class="right_col" role="main">
+  <div class="">
+
+
+    <div class="page-title">
+      <div class="title_left">
+        <h3>Submissão</h3>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Submissão {{ submissao.id }}</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
           </div>
-
-          <div class="title_right">
-            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">Go!</button>
-                </span>
+          <div class="x_content">
+              <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <b>Status: </b> <b class="{% if submissao.status == 1 %} text-success {% elif submissao.status == 0 %} text-primary {% else %} text-danger {% endif %}">{{ submissao.status_str }}</b><br>
+                  <b>Data/Hora: </b> {{ submissao.hora_submissao }}<br>
+                  <b>Exercício: </b> <a href="/exercicio_lista_aluno/{{ submissao.lista.id }}/{{ submissao.exercicio.id }}">{{ submissao.exercicio.titulo }}</a> <br>
+                  <b>Lista: </b> <a href="/lista_aluno/{{ submissao.lista.id }}">{{ submissao.lista.titulo }}</a> <br>
+                  <b>Grupo: </b> <a href="/grupo_aluno/{{ submissao.lista.grupo.id }}">{{ submissao.lista.grupo.nome }}</a> <br>
+                  <b>Professor: </b> {{ submissao.lista.grupo.professor.user.get_full_name }}<br>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="row">
-          <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel">
-              <div class="x_title">
-                <h2>Plain Page</h2>
-                <ul class="nav navbar-right panel_toolbox">
-                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                  </li>
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                    <ul class="dropdown-menu" role="menu">
-                      <li><a href="#">Settings 1</a>
-                      </li>
-                      <li><a href="#">Settings 2</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li><a class="close-link"><i class="fa fa-close"></i></a>
-                  </li>
-                </ul>
-                <div class="clearfix"></div>
+            <div class="ln_solid"></div>
+            <input type="hidden" name="tipo_submissao" value="editor" form="submissao">
+            <textarea id="editor-codigo-sub" name="editor_codigo" form="submissao">{{ codigo }}</textarea>
+            <div class="ln_solid"></div>
+            <form action="/tutor/" target="_blank"  method="post" id="submissao">
+              {% csrf_token %}
+              <div class="form-group">
+                  <button class="btn btn-primary" name="depurar">Depurar</button>
               </div>
-              <div class="x_content">
-                  Add content to the page ...
-              </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
+
+
+  </div>
+</div>
 {% endblock content %}
 
 {% block javascripts %}
   {{ block.super }}
+  <script type="text/javascript" src="/static/build/js/codemirror.js"></script>
+  <script type="text/javascript" src="/static/build/js/python.js"></script>
 {% endblock javascripts %}

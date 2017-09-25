@@ -1,65 +1,95 @@
 {% extends 'web/aluno/base.html' %}
 
-{% block title %} Plain Page {% endblock title %}
+{% block title %} Exercício {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
+  <link rel="stylesheet" href="/static/build/css/codemirror.css" media="screen" title="no title" charset="utf-8">
 {% endblock stylesheets %}
 
 {% block content %}
-    <div class="right_col" role="main">
-      <div class="">
-        <div class="page-title">
-          <div class="title_left">
-            <h3>Plain Page</h3>
+<div class="right_col" role="main">
+  <div class="">
+
+
+    <div class="page-title">
+      <div class="title_left">
+        <h3>Exercício</h3>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Exercício {{ exercicio.codigo }}</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
           </div>
-
-          <div class="title_right">
-            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for...">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">Go!</button>
-                </span>
+          <div class="x_content">
+            <!-- <div class="row"> -->
+              <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <b>Título: </b> {{ exercicio.titulo }} <br>
+                  <b>Tempo Limite (s): </b> {{ exercicio.lim_tempo_s }} <br>
+                </div>
               </div>
+              <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <b>Lista: </b> <a href="/lista_aluno/{{ lista.id }}">{{ lista.titulo }}</a> <br>
+                  <b>Grupo: </b> <a href="/grupo_aluno/{{ lista.grupo.id }}">{{ lista.grupo.nome }}</a> <br>
+                  <b>Professor: </b> {{ lista.grupo.professor.user.get_full_name }}<br>
+                </div>
+              </div>
+            <!-- </div> -->
+            <div class="ln_solid"></div>
+            <div class="radio" >
+            <label id="lblarquivo">
+              <input id="radio-arquivo" form="submissao" type="radio" class="flat" name="tipo_submissao" value="arquivo" checked required > Arquivo
+            </label>
             </div>
-          </div>
-        </div>
-
-        <div class="clearfix"></div>
-
-        <div class="row">
-          <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel">
-              <div class="x_title">
-                <h2>Plain Page</h2>
-                <ul class="nav navbar-right panel_toolbox">
-                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                  </li>
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                    <ul class="dropdown-menu" role="menu">
-                      <li><a href="#">Settings 1</a>
-                      </li>
-                      <li><a href="#">Settings 2</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li><a class="close-link"><i class="fa fa-close"></i></a>
-                  </li>
-                </ul>
-                <div class="clearfix"></div>
-              </div>
-              <div class="x_content">
-                  Add content to the page ...
-              </div>
+            <br>
+            <div class="">
+              <input class="" id="arquivo-submissao" form="submissao" type="file" name="arquivo-codigo" accept=".py">
             </div>
+            <br>
+            <div class="radio">
+            <label id="">
+              <input id="radio-editor" form="submissao" type="radio" class="flat" name="tipo_submissao" value="editor" /><span> Editor  </span>
+            </label>
+            </div>
+            <br>
+            <textarea id="editor-codigo" name="editor_codigo" form="submissao">
+# -*- coding: utf-8 -*-
+
+# seu código aqui
+            </textarea>
+            <div class="ln_solid"></div>
+
+            <!-- <a class="btn btn-primary" href="/submeter_exercicio_aluno/{{ lista.id }}/{{ exercicio.id }}" target="_blank">Depurar</a> -->
+            <form action="/submissao_codigo_aluno/{{ lista.id }}/{{ exercicio.id }}" method="post"  id="submissao" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group">
+                  <button id="btnSubmeter" class="btn btn-success" name="submeter">Submeter</button>
+                  <button id="btnDepurar" class="btn btn-primary" formaction="/tutor/" name="depurar">Depurar</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
+
+
+  </div>
+</div>
 {% endblock content %}
 
 {% block javascripts %}
   {{ block.super }}
+  <script type="text/javascript" src="/static/build/js/codemirror.js"></script>
+  <script type="text/javascript" src="/static/build/js/python.js"></script>
 {% endblock javascripts %}

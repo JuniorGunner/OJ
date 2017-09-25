@@ -4,6 +4,11 @@
 
 {% block stylesheets %}
   {{ block.super }}
+  <link href="/static/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+  <link href="/static/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+  <link href="/static/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+  <link href="/static/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+  <link href="/static/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 {% endblock stylesheets %}
 
 {% block content %}
@@ -33,7 +38,7 @@
                 {% if grupo.alunos.all|length == 0 %}
                   <p>Este grupo não tem nenhum aluno.</p>
                 {% else %}
-                  <table class="table table-hover">
+                  <table id="datatable" class="table table-hover">
                     <thead>
                       <tr>
                         <th>RA</th>
@@ -43,8 +48,10 @@
                     <tbody>
                       {% for aluno in grupo.alunos.all %}
                       <tr>
-                        <td scope="row"><a href="/perfil_aluno/{{ aluno.id }}">{{ aluno.id }}</a></td>
-                        <td scope="row"><a href="/perfil_aluno/{{ aluno.id }}">{{ aluno.user.get_full_name }}</a></td>
+                        <td scope="row">{{ aluno.ra }}</td>
+                        <td scope="row">{{ aluno.user.get_full_name }}</td>
+                        <!-- <td scope="row"><a href="/perfil_aluno/{{ aluno.id }}">{{ aluno.id }}</a></td>
+                        <td scope="row"><a href="/perfil_aluno/{{ aluno.id }}">{{ aluno.user.get_full_name }}</a></td> -->
                       </tr>
                       {% endfor %}
                     </tbody>
@@ -67,7 +74,28 @@
               </div>
               <div class="x_content">
                 <br>
-
+                {% if listas|length == 0 %}
+                  <p>Este grupo ainda não possui nenhuma lista.</p>
+                {% else %}
+                  <table id="datatableoj"  class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Código</th>
+                        <th>Título</th>
+                        <th>Prazo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for lista in listas %}
+                      <tr>
+                        <td scope="row"><a href="/lista_professor/{{ lista.id }}">{{ lista.id }}</a></td>
+                        <td scope="row"><a href="/lista_professor/{{ lista.id }}">{{ lista.titulo }}</a></td>
+                        <td scope="row">{{ lista.prazo }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -84,8 +112,11 @@
                 <div class="clearfix"></div>
               </div>
               <div class="x_content">
+                <b>Total de exercícios: </b> {{ desempenho.total_exercicios }} <br>
+                <b>Total de tentativas: </b> {{ desempenho.total_tentativas }} <br>
                 <br>
-
+                <b>Média de exercícios resolvidos: </b> {{ desempenho.resolvidos|floatformat:2 }} <br>
+                <b>Média de tentativas: </b> {{ desempenho.tentativas|floatformat:2 }} <br>
               </div>
             </div>
           </div>
@@ -120,4 +151,11 @@
 
 {% block javascripts %}
   {{ block.super }}
+  <script src="/static/vendors/datatables.net/js/jquery.dataTables.js"></script>
+  <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+  <script src="/static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+  <script src="/static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+  <script src="/static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/static/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+  <script src="/static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 {% endblock javascripts %}

@@ -37,8 +37,18 @@
                 <div class="clearfix"></div>
               </div>
               <div class="x_content">
-                {% if mensagem != '' %}
-                  <p>{{ mensagem }}</p>
+                {% if messages %}
+                {% for mensagem in messages %}
+                <div class="row">
+                  <div class="col-md-5 col-sm-5 col-xs-2">
+                    <div class="alert {{ mensagem.tags }} alert-dismissible fade in" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                      </button>
+                      <strong>{{ mensagem }}</strong>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
                 {% endif %}
                 <br />
                 <form id="lista-form" data-parsley-validate class="form-horizontal form-label-left" method="post" enctype="multipart/form-data">
@@ -52,7 +62,7 @@
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Grupo </label>
                     <div class="col-md-9 col-sm-9 col-xs-12">
-                      <select name="grupo" class="form-control">
+                      <select name="grupo" class="form-control" required="required">
                         <!-- <option value="">Escolher...</option> -->
                         {% for grupo in grupos %}
                         <option value="{{ grupo.id }}">{{ grupo.id }} - {{ grupo.nome }}</option>
@@ -72,9 +82,6 @@
                   <div class="form-group">
                     <div class="col-md-offset-3 col-sm-offset-3 col-xs-offset-3 col-md-9 col-sm-9 col-xs-12">
                       <div class="checkbox">
-                        <label>
-                          <input name="ver" type="checkbox" class="flat" checked="checked"> Ver
-                        </label>
                         <label>
                           <input name="submeter" type="checkbox" class="flat" checked="checked"> Submeter
                         </label>
@@ -101,7 +108,7 @@
                             <td class="a-center ">
                               <input type="checkbox" class="flat" name="table_records" value="{{ exercicio.id }}">
                             </td>
-                            <td><a href="/exercicio_professor/{{ exercicio.id }}" target="_blank">{{ exercicio.codigo }}</a></td>
+                            <td><a href="/exercicio_professor/{{ exercicio.id }}" target="_blank">{{ exercicio.id }}</a></td>
                             <td><a href="/exercicio_professor/{{ exercicio.id }}" target="_blank">{{ exercicio.titulo }}</a></td>
                           </tr>
                         {% endfor %}
