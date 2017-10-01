@@ -1,4 +1,5 @@
 {% extends 'web/aluno/base.html' %}
+{% load l10n %}
 
 {% block title %} Lista {{ lista.titulo }} {% endblock title %}
 
@@ -10,10 +11,11 @@
 <div class="right_col" role="main">
   <div class="">
 
-
-    <div class="page-title">
-      <div class="title_left">
-        <h3>Lista</h3>
+    <div class="row">
+      <div class="page-title">
+        <div class="title_left">
+          <h3>Lista</h3>
+        </div>
       </div>
     </div>
 
@@ -28,10 +30,18 @@
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
+            <div class="row">
+              <div class="progress">
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ porcentagem|unlocalize }}"
+                aria-valuemin="0" aria-valuemax="100" style="width:{{ porcentagem|unlocalize }}%">
+                  {{ porcentagem|floatformat:2 }}%
+                </div>
+              </div>
+            </div>
             <b>Título: </b> {{ lista.titulo }}<br>
             <b>Grupo: </b> <a href="/grupo_aluno/{{ lista.grupo.id }}">{{ lista.grupo.nome }}</a> <br>
-            <b>Data/Hora Criação: </b> {{ lista.hora_criacao }}<br>
-            <b>Prazo: </b> {{ lista.prazo }}<br>
+            <b>Data/Hora Criação: </b> {{ lista.hora_criacao|date:'d/m/Y H:i' }}<br>
+            <b>Prazo: </b> {{ lista.prazo|date:'d/m/Y H:i' }}<br>
           </div>
         </div>
       </div>
@@ -110,6 +120,7 @@
             {% else %}
               {% for registro in alunos %}
                 <div class="ln_solid"></div>
+                <b>RA: </b>{{ registro.aluno.ra }}<br>
                 <b>Aluno: </b>{{ registro.aluno.user.get_full_name }}<br>
                 <b>Exercícios Resolvidos: </b>{{ registro.qtd_resolvida }}<br>
                 {% if registro.exercicios_aluno|length == 0 %}

@@ -7,14 +7,16 @@ from django.contrib.auth.views import login as view_login, logout_then_login
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.db.models import Count
+import shutil
 
 from django.http import JsonResponse
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 
 import datetime
+from django.utils import timezone
 
 import os
 import json
@@ -89,7 +91,7 @@ def grupo(request, id):
     if hasattr(request.user, 'aluno'):
         return render(request, 'web/page_403.html', {})
 
-    grupo = get_object_or_404(Grupo, id = id, inativo = False)
+    grupo = get_object_or_404(Grupo, id = id)
 
     if grupo.professor != request.user.professor:
         return render(request, 'web/page_403.html', {})
@@ -119,11 +121,14 @@ def grupo(request, id):
         desempenho['resolvidos'] = 0
         desempenho['tentativas'] = 0
 
+    materiais = Material.objects.filter(grupo = grupo)
+
     return render(request, 'web/professor/grupo.html',
     {
         'grupo': grupo,
         'listas': listas,
-        'desempenho': desempenho
+        'desempenho': desempenho,
+        'materiais': materiais
     })
 
 @login_required
@@ -134,6 +139,120 @@ def perfil_aluno(request, id):
     aluno = get_object_or_404(Aluno, id = id)
 
     return render(request, 'web/professor/perfil_aluno.html', {'aluno': aluno})
+
+@login_required
+def upload_material(request, id):
+    if hasattr(request.user, 'aluno'):
+        return render(request, 'web/page_403.html', {})
+
+    grupo = get_object_or_404(Grupo, id = id)
+
+    return render(request, 'web/professor/upload_material.html', {'grupo': grupo})
+
+@login_required
+def confirmacao_upload(request, id):
+    if hasattr(request.user, 'aluno'):
+        return render(request, 'web/page_403.html', {})
+
+    grupo = get_object_or_404(Grupo, id = id)
+
+    for arq in request.FILES:
+        arquivos = request.FILES.getlist(arq)
+        for arquivo in arquivos:
+            material = Material(
+                titulo = arquivo.name,
+                grupo = grupo
+            )
+
+            material.save()
+
+            caminho = material.caminho()
+            os.makedirs(caminho)
+
+            fs = FileSystemStorage(location = caminho)
+            fs.save(arquivo.name, arquivo)
+
+    return redirect('web.views.professor.grupo', id = id)
+
+@login_required
+def download(request, id):
+    material = get_object_or_404(Material, id = id, grupo__inativo = False)
+
+    if hasattr(request.user, 'professor'):
+        if material.grupo.professor != request.user.professor:
+            return render(request, 'web/page_403.html', {})
+    elif hasattr(request.user, 'aluno'):
+        if not request.user.aluno in material.grupo.alunos.all():
+            return render(request, 'web/page_403.html', {})
+
+    caminho = os.path.join(material.caminho(), material.titulo)
+
+    with open(caminho, 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/pdf")
+        response['Content-Disposition'] = 'inline; filename=' + os.path.basename(caminho)
+        return response
+
+    return render(request, 'web/page_403.html', {})
+
+@login_required
+def excluir_material(request, id_grupo):
+    if hasattr(request.user, 'aluno'):
+        return JsonResponse({
+            'sucesso': False,
+            'mensagem': 'Acesso Negado.',
+            'materiais': []
+        })
+
+    try:
+        grupo = Grupo.objects.get(id = id_grupo, inativo = False)
+    except Grupo.DoesNotExist:
+        grupo = None
+
+    if grupo:
+        if grupo.professor != request.user.professor:
+            return JsonResponse({
+                'sucesso': False,
+                'mensagem': 'Acesso Negado.',
+                'materiais': []
+            })
+
+        materiais = request.POST.getlist('materiais[]')
+
+        if not materiais:
+            return JsonResponse({
+                'sucesso': False,
+                'mensagem': 'Nenhum arquivo selecionado.',
+                'materiais': []
+            })
+
+        mensagem = 'Arquivos excluídos com sucesso.'
+        del_mats = []
+
+        for material in materiais:
+            try:
+                mat = Material.objects.get(id = int(material), grupo = grupo)
+            except Material.DoesNotExist:
+                mensagem = 'Um ou mais arquivos não puderam ser excluídos.'
+                continue
+
+            shutil.rmtree(mat.caminho())
+            mat.delete()
+            del_mats.append(material)
+
+        return JsonResponse({
+            'sucesso': True,
+            'mensagem': mensagem,
+            'materiais': del_mats
+        })
+
+    mensagem = 'Grupo não encontrado.'
+
+    return JsonResponse({
+        'sucesso': False,
+        'mensagem': mensagem,
+        'materiais': []
+    })
+
 
 @login_required
 def listas(request):
@@ -212,6 +331,13 @@ def lista(request, id):
 
     alunos = []
 
+    msgs = messages.get_messages(request)
+
+    mensagem = None
+    for msg in msgs:
+        mensagem = msg
+        break
+
     alunos_lista = Aluno.objects.filter(grupo__lista = lista)
 
     desempenho = {
@@ -268,8 +394,29 @@ def lista(request, id):
     return render(request, 'web/professor/lista.html', {
         'lista': lista,
         'alunos': alunos,
-        'desempenho': desempenho
+        'desempenho': desempenho,
+        'mensagem': mensagem
     })
+
+@login_required
+def excluir_lista(request, id):
+    if hasattr(request.user, 'aluno'):
+        return render(request, 'web/page_403.html', {})
+
+    lista = get_object_or_404(Lista, id = id, inativo = False)
+
+    if lista.grupo.professor != request.user.professor:
+        return render(request, 'web/page_403.html', {})
+
+    if timezone.now() < lista.prazo:
+        mensagem = 'Lista não pode ser excluída. Prazo em vigência.'
+        messages.add_message(request, messages.ERROR, mensagem)
+        return redirect('web.views.professor.lista', id = id)
+    else:
+        grupo.inativo = True
+        grupo.save()
+
+    return redirect('web.views.professor.listas')
 
 @login_required
 def submissoes_lista_aluno(request, lista_id, exercicio_id, aluno_id):
@@ -302,7 +449,7 @@ def submissao(request, id):
 @login_required
 def habilita_submissao(request, listaid):
     if hasattr(request.user, 'aluno'):
-        return render(request, 'web/page_403.html', {})
+        return JsonResponse({'habilitou': False})
 
     try:
         lista = Lista.objects.get(id = listaid, inativo = False)
@@ -313,7 +460,7 @@ def habilita_submissao(request, listaid):
 
     if lista:
         if lista.grupo.professor != request.user.professor:
-            return render(request, 'web/page_403.html', {})
+            return JsonResponse({'habilitou': False})
 
         lista.submeter = True
         lista.save()
@@ -327,7 +474,7 @@ def exercicio(request, id):
     if hasattr(request.user, 'aluno'):
         return render(request, 'web/page_403.html', {})
 
-    exercicio = get_object_or_404(Exercicio, id = id, inativo = False)
+    exercicio = get_object_or_404(Exercicio, id = id)
 
     if exercicio.professor != request.user.professor:
         return render(request, 'web/page_403.html', {})
@@ -375,9 +522,6 @@ def exercicios(request):
 def criar_exercicio(request):
     if hasattr(request.user, 'aluno'):
         return render(request, 'web/page_403.html', {})
-
-    mensagem = ''
-    tipo_mensagem = 0
 
     if request.method == 'POST' and request.FILES['arquivos-entrada'] and \
     request.FILES['arquivos-saida']:
@@ -480,7 +624,8 @@ def criar_exercicio(request):
             f.close()
 
         mensagem = 'Exercício criado com sucesso'
-        tipo_mensagem = 1
+        messages.add_message(request, messages.SUCCESS, mensagem)
 
-    return render(request, 'web/professor/criar_exercicio.html',
-    {'mensagem': mensagem, 'tipo_mensagem': tipo_mensagem})
+        return HttpResponseRedirect(reverse('web.views.professor.criar_exercicio'))
+
+    return render(request, 'web/professor/criar_exercicio.html', {})

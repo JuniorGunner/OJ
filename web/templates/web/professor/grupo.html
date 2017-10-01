@@ -90,7 +90,7 @@
                       <tr>
                         <td scope="row"><a href="/lista_professor/{{ lista.id }}">{{ lista.id }}</a></td>
                         <td scope="row"><a href="/lista_professor/{{ lista.id }}">{{ lista.titulo }}</a></td>
-                        <td scope="row">{{ lista.prazo }}</td>
+                        <td scope="row">{{ lista.prazo|date:'d/m/Y H:i' }}</td>
                       </tr>
                       {% endfor %}
                     </tbody>
@@ -117,6 +117,66 @@
                 <br>
                 <b>Média de exercícios resolvidos: </b> {{ desempenho.resolvidos|floatformat:2 }} <br>
                 <b>Média de tentativas: </b> {{ desempenho.tentativas|floatformat:2 }} <br>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>Material <small><a href="/upload_material/{{ grupo.id }}">Adicionar Material</a></small></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content material-content">
+                {% if materiais|length == 0 %}
+                  <p>Este grupo não tem nenhum material disponível.</p>
+                {% else %}
+                  <table id="datatable-checkbox"  class="table bulk_action">
+                    <thead>
+                      <tr>
+                        <th><input type="checkbox" id="check-all" class="flat"></th>
+                        <th>Nome</th>
+                        <th>Data de Criação</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for material in materiais %}
+                      <tr>
+                        <td class="a-center ">
+                          <input type="checkbox" class="flat" name="table_records" value="{{ material.id }}">
+                        </td>
+                        <td scope="row"><a href="/download/{{ material.id }}" target="_blank"><span class="fa fa-file-pdf-o text-danger"></span> &nbsp{{ material.titulo }}</a></td>
+                        <td scope="row">{{ material.hora_criacao|date:'d/m/Y H:i' }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  <div class="ln_solid"></div>
+                  <button type="button" class="btn btn-danger" data-toggle="modal" data-target=".excluir-material">Excluir Material</button>
+                  <div class="modal fade excluir-material" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                          </button>
+                          <h4 class="modal-title" id="myModalLabel">Confirmação</h4>
+                        </div>
+                        <div class="modal-body">
+                          <h4>Deseja realmente excluir os materiais selecionados?</h4>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="submit" id="btn-excluir-material" url-exclui-material="/excluir_material/{{ grupo.id }}" class="btn btn-danger" data-dismiss="modal">Confirmar</a>
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
               </div>
             </div>
           </div>

@@ -8,8 +8,14 @@ class Aluno(models.Model):
     ra = models.CharField(max_length = 10, unique = True, verbose_name = 'RA')
     user = models.OneToOneField(User, on_delete = models.CASCADE, verbose_name = 'Usuário')
 
+    def __str__(self):
+        return self.ra + ' - ' + self.user.get_full_name()
+
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE, verbose_name = 'Usuário')
+
+    def __str__(self):
+        return str(self.id) + ' - ' + self.user.get_full_name()
 
 class Grupo(models.Model):
     nome = models.CharField(max_length = 60, verbose_name = 'Nome')
@@ -20,6 +26,10 @@ class Grupo(models.Model):
 class Material(models.Model):
     titulo = models.CharField(max_length = 60, verbose_name = 'Título')
     grupo = models.ForeignKey(Grupo, on_delete = models.CASCADE, verbose_name = 'Grupo')
+    hora_criacao = models.DateTimeField(auto_now_add = True, verbose_name = 'Data/Hora Criação')
+
+    def caminho(self):
+        return os.path.join(settings.OJ_DATA_DIR, 'grupos', str(self.grupo.id), str(self.id))
 
 class Exercicio(models.Model):
     titulo = models.CharField( max_length = 60, verbose_name = 'Título')

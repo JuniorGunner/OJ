@@ -117,6 +117,42 @@
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Material</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            {% if materiais|length == 0 %}
+              <p>Este grupo não tem nenhum material disponível.</p>
+            {% else %}
+              <table id="datatableoj"  class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Data de Criação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for material in materiais %}
+                  <tr>
+                    <td scope="row"><a href="/download/{{ material.id }}" target="_blank"><span class="fa fa-file-pdf-o text-danger"></span> &nbsp{{ material.titulo }}</a></td>
+                    <td scope="row">{{ material.hora_criacao|date:'d/m/Y H:i' }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
 
   </div>
 </div>

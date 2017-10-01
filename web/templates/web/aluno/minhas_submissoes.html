@@ -56,7 +56,7 @@
                     <td><a href="/submissao_aluno/{{ submissao.id }}">{{ submissao.id }}</a></td>
                     <td><a href="/exercicio_lista_aluno/{{ submissao.lista.id }}/{{ submissao.exercicio.id }}">{{ submissao.exercicio.id }} - {{ submissao.exercicio.titulo }}</a></td>
                     <td><a href="/lista_aluno/{{ submissao.lista.id }}">{{ submissao.lista.titulo }}</a></td>
-                    <td>{{ submissao.hora_submissao }}</td>
+                    <td>{{ submissao.hora_submissao|date:'d/m/Y H:i' }}</td>
                     <td class="{% if submissao.status == 1 %} text-success {% elif submissao.status == 0 %} text-primary {% else %} text-danger {% endif %}" ><b>{{ submissao.status_str }}</b></td>
                   </tr>
                   {% endfor %}

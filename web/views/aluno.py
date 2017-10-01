@@ -40,14 +40,15 @@ def grupo(request, id):
     if hasattr(request.user, 'professor'):
         return render(request, 'web/page_403.html', {})
 
-    grupo = get_object_or_404(Grupo, id = id, inativo = False)
+    grupo = get_object_or_404(Grupo, id = id)
 
     if not request.user.aluno in grupo.alunos.all():
         return render(request, 'web/page_403.html', {})
 
     listas = Lista.objects.filter(grupo = grupo, inativo = False)
+    materiais = Material.objects.filter(grupo = grupo)
 
-    return render(request, 'web/aluno/grupo.html', {'grupo': grupo, 'listas': listas})
+    return render(request, 'web/aluno/grupo.html', {'grupo': grupo, 'listas': listas, 'materiais': materiais})
 
 @login_required
 def listas(request):
@@ -94,6 +95,8 @@ def lista(request, id):
 
     alunos_lista = Aluno.objects.filter(grupo__lista = lista)
 
+    porcentagem = 0.0
+
     for aluno in alunos_lista:
         exercicios_aluno = []
         qtd_resolvida = 0
@@ -116,6 +119,12 @@ def lista(request, id):
             exercicios_aluno.append(exercicio_aluno)
             total_tentativas += tentativas
 
+        if aluno == request.user.aluno:
+            try:
+                porcentagem = qtd_resolvida / exercicios.count() * 100
+            except:
+                porcentagem = 0.0
+
         alunos.append({
             'aluno': aluno,
             'exercicios_aluno': exercicios_aluno,
@@ -131,7 +140,8 @@ def lista(request, id):
     return render(request, 'web/aluno/lista.html', {
         'lista': lista,
         'alunos': alunos,
-        'exercicios_sub': exercicios_sub
+        'exercicios_sub': exercicios_sub,
+        'porcentagem': porcentagem
     })
 
 @login_required
@@ -140,7 +150,7 @@ def exercicio_lista(request, lista, id):
         return render(request, 'web/page_403.html', {})
 
     lista = get_object_or_404(Lista, id = lista, inativo = False, submeter = True)
-    exercicio = get_object_or_404(Exercicio, id = id, inativo = False)
+    exercicio = get_object_or_404(Exercicio, id = id)
 
     if not exercicio in lista.exercicios.all():
         return render(request, 'web/page_403.html', {})
@@ -184,7 +194,7 @@ def resposta_exercicio(request, lista, id):
         return render(request, 'web/page_403.html', {})
 
     lista = get_object_or_404(Lista, id = lista, inativo = False, submeter = True)
-    exercicio = get_object_or_404(Exercicio, id = id, inativo = False)
+    exercicio = get_object_or_404(Exercicio, id = id)
 
     if not exercicio in lista.exercicios.all():
         return render(request, 'web/page_403.html', {})
@@ -213,7 +223,7 @@ def submeter_exercicio(request, lista, id):
         return render(request, 'web/page_403.html', {})
 
     lista = get_object_or_404(Lista, id = lista, inativo = False, submeter = True)
-    exercicio = get_object_or_404(Exercicio, id = id, inativo = False)
+    exercicio = get_object_or_404(Exercicio, id = id)
 
     if not exercicio in lista.exercicios.all():
         return render(request, 'web/page_403.html', {})
@@ -232,7 +242,7 @@ def submissao_codigo(request, listaid, id):
         return render(request, 'web/page_403.html', {})
 
     lista = get_object_or_404(Lista, id = listaid, inativo = False, submeter = True)
-    exercicio = get_object_or_404(Exercicio, id = id, inativo = False)
+    exercicio = get_object_or_404(Exercicio, id = id)
 
     if not exercicio in lista.exercicios.all():
         return render(request, 'web/page_403.html', {})

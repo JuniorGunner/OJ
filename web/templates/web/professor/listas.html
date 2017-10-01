@@ -56,7 +56,7 @@
                         <td scope="row"><a href="/lista_professor/{{ lista.id }}">{{ lista.id }}</a></td>
                         <td scope="row"><a href="/lista_professor/{{ lista.id }}">{{ lista.titulo }}</a></td>
                         <td scope="row"><a href="/grupo_professor/{{ lista.grupo.id }}">{{ lista.grupo.nome }}</a></td>
-                        <td scope="row">{{ lista.prazo }}</td>
+                        <td scope="row">{{ lista.prazo|date:'d/m/Y H:i' }}</td>
                       </tr>
                       {% endfor %}
                     </tbody>

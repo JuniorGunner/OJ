@@ -57,7 +57,7 @@
                     <td scope="row"><a href="/lista_aluno/{{ lista.id }}">{{ lista.titulo }}</a></td>
                     <td scope="row"><a href="/grupo_aluno/{{ lista.grupo.id }}">{{ lista.grupo.nome }}</a></td>
                     <td scope="row">{{ lista.grupo.professor.user.get_full_name }}</td>
-                    <td>{{ lista.prazo }}</td>
+                    <td>{{ lista.prazo|date:'d/m/Y H:i' }}</td>
                   </tr>
                   {% endfor %}
                 </tbody>

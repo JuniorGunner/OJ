@@ -28,9 +28,20 @@
                 <div class="clearfix"></div>
               </div>
               <div class="x_content">
+                {% if mensagem %}
+                <div class="row">
+                  <div class="col-md-5 col-sm-5 col-xs-2">
+                    <div class="alert {{ mensagem.tags }} alert-dismissible fade in" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                      </button>
+                      <strong>{{ mensagem }}</strong>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
                 <b>Grupo: </b> <a href="/grupo_professor/{{ lista.grupo.id }}">{{ lista.grupo.nome }}</a> <br>
-                <b>Data/Hora Criação: </b> {{ lista.hora_criacao }}<br>
-                <b>Prazo: </b> {{ lista.prazo }}<br>
+                <b>Data/Hora Criação: </b> {{ lista.hora_criacao|date:'d/m/Y H:i' }}<br>
+                <b>Prazo: </b> {{ lista.prazo|date:'d/m/Y H:i' }}<br>
 
                 <!-- <div class="checkbox">
                     <label>

@@ -1,0 +1,70 @@
+{% extends 'web/professor/base.html' %}
+
+{% block title %} Upload de Material {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link href="/static/vendors/dropzone/dist/min/dropzone.min.css" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="right_col" role="main">
+      <div class="">
+
+
+        <div class="page-title">
+          <div class="title_left">
+            <h3>Material</h3>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>Grupo: {{ grupo.id }} - {{ grupo.nome }}</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                  <li class="col-md-offset-9 col-sm-offset-9 col-xs-offset-9"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                <form class="dropzone" action="/confirmacao_upload/{{ grupo.id }}" id="material-form">{% csrf_token %}</form>
+                <!-- <div class="dropzone" id="material-form"></div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target=".moss-modal">Enviar</button>
+        <div class="modal fade moss-modal" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Confirmação</h4>
+              </div>
+              <div class="modal-body">
+                <h4>Deseja realmente fazer upload dos arquivos selecionados?</h4>
+              </div>
+              <div class="modal-footer">
+                <button id="btn-enviar-material" data-dismiss="modal" class="btn btn-success">Enviar</a>
+                <!-- <button form="material-form" type="submit" class="btn btn-success">Enviar</a> -->
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/vendors/dropzone/dist/min/dropzone.min.js"></script>
+{% endblock javascripts %}

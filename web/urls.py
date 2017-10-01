@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^lista_professor/(?P<id>\d+)$', professor.lista, name="web-lista-professor"),
     url(r'^listas_professor/$', professor.listas, name="web-listas-professor"),
     url(r'^criar_lista/$', professor.criar_lista, name="web-criar-lista-professor"),
+    url(r'^excluir_lista/(?P<id>\d+)$', professor.excluir_lista, name="web-excluir-lista-professor"),
     url(r'^exercicios_professor/$', professor.exercicios, name="web-exercicios-professor"),
     url(r'^exercicio_professor/(?P<id>\d+)$', professor.exercicio, name="web-exercicio-professor"),
     url(r'^excluir_exercicio/(?P<id>\d+)$', professor.excluir_exercicio, name="web-excluir-exercicio-professor"),
@@ -36,6 +37,10 @@ urlpatterns = [
     url(r'^habilita_submissao/(?P<listaid>\d+)$', professor.habilita_submissao, name="web-habilita-submissao-professor"),
     url(r'^submissao_exercicio_aluno/(?P<id>\d+)$', professor.submissao, name="web-submissao-professor"),
     url(r'^submissoes_lista_aluno/(?P<lista_id>\d+)/(?P<exercicio_id>\d+)/(?P<aluno_id>\d+)$', professor.submissoes_lista_aluno, name="web-submissoes-lista-aluno-professor"),
+    url(r'^upload_material/(?P<id>\d+)$', professor.upload_material, name="web-upload-material-professor"),
+    url(r'^confirmacao_upload/(?P<id>\d+)$', professor.confirmacao_upload, name="web-confirmacao-upload-professor"),
+    url(r'^download/(?P<id>\d+)$', professor.download, name="web-download-professor"),
+    url(r'^excluir_material/(?P<id_grupo>\d+)$', professor.excluir_material, name="web-excluir-material-professor"),
 
     # login
 	url(r'^login/$', view_login, {'template_name': 'web/check_login.html'}, name='web-login'),

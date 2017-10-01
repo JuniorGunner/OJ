@@ -34,7 +34,7 @@
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <b>Status: </b> <b class="{% if submissao.status == 1 %} text-success {% elif submissao.status == 0 %} text-primary {% else %} text-danger {% endif %}">{{ submissao.status_str }}</b><br>
-                  <b>Data/Hora: </b> {{ submissao.hora_submissao }}<br>
+                  <b>Data/Hora: </b> {{ submissao.hora_submissao|date:'d/m/Y H:i' }}<br>
                   <b>Exercício: </b> <a href="/exercicio_lista_aluno/{{ submissao.lista.id }}/{{ submissao.exercicio.id }}">{{ submissao.exercicio.titulo }}</a> <br>
                   <b>Lista: </b> <a href="/lista_aluno/{{ submissao.lista.id }}">{{ submissao.lista.titulo }}</a> <br>
                   <b>Grupo: </b> <a href="/grupo_aluno/{{ submissao.lista.grupo.id }}">{{ submissao.lista.grupo.nome }}</a> <br>

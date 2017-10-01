@@ -55,7 +55,7 @@
                   {% for submissao in submissoes %}
                   <tr>
                     <td><a href="/submissao_exercicio_aluno/{{ submissao.id }}">{{ submissao.id }}</a></td>
-                    <td>{{ submissao.hora_submissao }}</td>
+                    <td>{{ submissao.hora_submissao|date:'d/m/Y H:i' }}</td>
                     <td class="{% if submissao.status == 1 %} text-success {% elif submissao.status == 0 %} text-primary {% else %} text-danger {% endif %}" ><b>{{ submissao.status_str }}</b></td>
                   </tr>
                   {% endfor %}
