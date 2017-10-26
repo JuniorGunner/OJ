@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^upload_material/(?P<id>\d+)$', professor.upload_material, name="web-upload-material-professor"),
     url(r'^confirmacao_upload/(?P<id>\d+)$', professor.confirmacao_upload, name="web-confirmacao-upload-professor"),
     url(r'^download/(?P<id>\d+)$', professor.download, name="web-download-professor"),
+    url(r'^moss/(?P<lista_id>\d+)/(?P<exercicio_id>\d+)$', professor.moss, name="web-moss-professor"),
     url(r'^excluir_material/(?P<id_grupo>\d+)$', professor.excluir_material, name="web-excluir-material-professor"),
 
     # login

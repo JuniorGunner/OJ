@@ -102,6 +102,7 @@
                       <tr>
                         <th>Código</th>
                         <th>Título</th>
+                        <th>MOSS</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -112,6 +113,28 @@
                         </td>
                         <td scope="row">
                           <a href="/exercicio_professor/{{ exercicio.id }}">{{ exercicio.titulo }}</a>
+                        </td>
+                        <td>
+                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".moss-modal-{{ exercicio.id }}">Enviar</button>
+                          <div class="modal fade moss-modal-{{ exercicio.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                  </button>
+                                  <h4 class="modal-title" id="myModalLabel">Confirmação</h4>
+                                </div>
+                                <div class="modal-body">
+                                  <h4>Deseja realmente solicitar avaliação de similaridade entre as submissões da lista {{ lista.titulo }} - exercício {{ exercicio.titulo }}?</h4>
+                                  <h4>Você receberá um e-mail com os resultados.</h4>
+                                </div>
+                                <div class="modal-footer">
+                                  <a href="/moss/{{ lista.id }}/{{ exercicio.id }}" class="btn btn-primary">Confirmar</a>
+                                  <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </td>
                       </tr>
                       {% endfor %}
@@ -232,27 +255,6 @@
               </div>
               <div class="modal-footer">
                 <a href="/excluir_lista/{{ lista.id }}" class="btn btn-danger">Confirmar</a>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".moss-modal">Submeter ao MOSS</button>
-        <div class="modal fade moss-modal" tabindex="-1" role="dialog" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">Confirmação</h4>
-              </div>
-              <div class="modal-body">
-                <h4>Deseja realmente solicitar avaliação de similaridade entre as submissões da lista {{ lista.titulo }}?</h4>
-                <h4>Você receberá um e-mail com os resultados.</h4>
-              </div>
-              <div class="modal-footer">
-                <a href="/excluir_lista/{{ lista.id }}" class="btn btn-primary">Confirmar</a>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
               </div>
             </div>

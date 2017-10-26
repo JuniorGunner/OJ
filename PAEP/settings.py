@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import json
 from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
@@ -25,6 +26,7 @@ MESSAGE_TAGS = {
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 OJ_DATA_DIR = os.path.join(BASE_DIR, 'OJ_data')
+MOSS_PATH = os.path.join(BASE_DIR, 'moss.pl')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -110,6 +112,25 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# CELERY STUFF
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'America/Sao_Paulo'
+
+# Email configuration
+cfg_path = os.path.join(BASE_DIR, 'cfg.json')
+cfg = json.load(open(cfg_path))
+
+DEFAULT_FROM_EMAIL = "paepuniso@gmail.com"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "paepuniso@gmail.com"
+EMAIL_HOST_PASSWORD = cfg.get("PW", '')
+EMAIL_USE_TLS = True
 
 
 # Static files (CSS, JavaScript, Images)

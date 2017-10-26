@@ -9,6 +9,7 @@ from django.conf import settings
 from django.db.models import Count
 import shutil
 
+from web.tasks import moss_task
 from django.http import JsonResponse
 
 from django.core.urlresolvers import reverse
@@ -24,6 +25,40 @@ import json
 from web.models import *
 
 import operator
+
+@login_required
+def moss(request, lista_id, exercicio_id):
+    if hasattr(request.user, 'aluno'):
+        return render(request, 'web/page_403.html', {})
+
+    lista = get_object_or_404(Lista, id = lista_id, inativo = False)
+
+    if lista.grupo.professor != request.user.professor:
+        return render(request, 'web/page_403.html', {})
+
+    submissoes = []
+
+    alunos_lista = Aluno.objects.filter(grupo__lista = lista)
+    exercicio = lista.exercicios.filter(id = exercicio_id)
+
+    for aluno in alunos_lista:
+        submissoes_aluno = Submissao.objects.filter(lista = lista, aluno = aluno,
+        exercicio = exercicio).order_by('hora_submissao')
+
+        for submissao in submissoes_aluno:
+            if submissao.status == 1:
+                submissoes.append(submissao.id)
+                break
+
+    if len(submissoes) < 2:
+        mensagem = 'Devem existir pelo menos duas submissões aceitas para a comparação.'
+        messages.add_message(request, messages.WARNING, mensagem)
+    else:
+        moss_task.delay(submissoes)
+        mensagem = 'Solicitação efetuada com sucesso.'
+        messages.add_message(request, messages.SUCCESS, mensagem)
+
+    return redirect('web.views.professor.lista', lista.id)
 
 @login_required
 def excluir_grupo(request, id):
