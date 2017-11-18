@@ -623,11 +623,13 @@ def criar_exercicio(request):
         os.makedirs(dir_out_sample)
 
         # cria o arquivo de exemplo de entrada
+        exemplo_entrada = exemplo_entrada.replace('\r\n', '\n')
         with open(os.path.join(dir_in_sample, '1.txt'), 'w') as f:
             f.writelines(exemplo_entrada + '\n')
             f.close()
 
         # cria o arquivo de exemplo de saída
+        exemplo_saida = exemplo_saida.replace('\r\n', '\n')
         with open(os.path.join(dir_out_sample, '1.txt'), 'w') as f:
             f.writelines(exemplo_saida + '\n')
             f.close()

@@ -42,7 +42,8 @@ def moss_task(submissoes_ids):
     url = [i for i in out.split('\n') if i][-1]
     assunto = u"PAEP [REQUISIÇÃO MOSS]"
     mensagem = u"Resultados do MOSS para:\n"
-    mensagem += u'Lista "' + lista.titulo + u'" - Exercício "' + exercicio.titulo + '"\n\n'
+    mensagem += u'Lista "' + lista.titulo + u'" - Exercício "' + exercicio.titulo +\
+    u'" - Grupo "' + lista.grupo.nome + '"\n\n'
     mensagem += url
     try:
         professor.user.email_user(subject = assunto, message = mensagem)
