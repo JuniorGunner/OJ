@@ -1,4 +1,5 @@
-# OJ
+# Online Judge and Academic Interaction Channel for Programming Learning Support.
+## Computer Science capstone project
 
-configuração:
+## Settings:
 https://github.com/sharmaeklavya2/OJL3
